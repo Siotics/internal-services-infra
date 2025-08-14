@@ -1,0 +1,17 @@
+- hosts: target
+  become: True
+  roles:
+    - role: geerlingguy.pip
+      pip_executable: pip3
+      vars:
+        pip_install_packages:
+          - name: jsondiff
+          - name: pyyaml
+          - name: docker
+
+    - role: geerlingguy.docker
+      vars:
+        docker_package_state: present
+        docker_install_compose: False
+
+

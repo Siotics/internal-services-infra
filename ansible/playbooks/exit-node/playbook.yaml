@@ -1,0 +1,7 @@
+- hosts: target
+  become: yes
+  tasks:
+    - name: Upgrade all packages to the latest version
+      ansible.builtin.apt:
+        state: latest
+        update_cache: yes
