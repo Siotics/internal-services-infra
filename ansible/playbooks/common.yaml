@@ -5,6 +5,16 @@
       apt:
         state: latest
         update_cache: yes
+
+    - name: Install unattended-upgrades on Debian/Ubuntu
+      package:
+        name: unattended-upgrades
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Enable unattended-upgrades service
+      command: dpkg-reconfigure -f noninteractive unattended-upgrades
+      when: ansible_os_family == "Debian"
         
     - name: Ensure tzdata is installed
       apt:
