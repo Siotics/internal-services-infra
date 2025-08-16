@@ -1,0 +1,10 @@
+- hosts: exit-node
+  pre_task:
+    - name: Create docker traefik network
+      docker_network:
+        name: traefik
+        driver: overlay
+    - name: Create docker cloudflared network
+      docker_network:
+        name: cloudflared
+        driver: cloudflared

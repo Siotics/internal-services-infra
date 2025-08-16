@@ -1,4 +1,4 @@
-- hosts: target
+- hosts: exit-node
   become: yes
   tasks:
     - name: Upgrade all packages to the latest version

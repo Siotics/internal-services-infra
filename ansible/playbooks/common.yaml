@@ -1,25 +1,22 @@
-- hosts: target
+- hosts: all:!localhost
   become: True
   tasks:
     - name: Upgrade all packages to the latest version
-      ansible.builtin.apt:
+      apt:
         state: latest
         update_cache: yes
         
     - name: Ensure tzdata is installed
-      become: true
       apt:
         name: tzdata
         state: present
         update_cache: true
 
     - name: Set timezone to Jakarta
-      become: true
       timezone:
         name: Asia/Jakarta
     
     - name: Install packages
-      become: true
       apt:
         name:
           - git

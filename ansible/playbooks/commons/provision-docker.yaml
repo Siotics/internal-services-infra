@@ -1,5 +1,18 @@
-- hosts: target
-  become: True
+- hosts: all:!localhost
+  become: true
+  tasks:
+    - name: Ensure required packages for apt key management are installed
+      apt:
+        name:
+          - gnupg
+          - apt-transport-https
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: yes
+
+- hosts: all:!localhost
+  become: true
   roles:
     - role: geerlingguy.pip
       pip_executable: pip3
@@ -12,6 +25,5 @@
     - role: geerlingguy.docker
       vars:
         docker_package_state: present
-        docker_install_compose: False
-
+        docker_install_compose: false
 
