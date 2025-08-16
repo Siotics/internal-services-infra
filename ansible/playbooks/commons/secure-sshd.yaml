@@ -1,0 +1,44 @@
+- name: Secure SSH with Fail2ban
+  hosts: all:!localhost
+  become: true
+  tasks:
+    - name: Ensure fail2ban is installed
+      package:
+        name: fail2ban
+        state: present
+
+    - name: Ensure fail2ban service is enabled and running
+      service:
+        name: fail2ban
+        state: started
+        enabled: true
+
+    - name: Configure jail for sshd
+      copy:
+        dest: /etc/fail2ban/jail.d/sshd.conf
+        content: |
+          [sshd]
+          enabled = true
+          port    = ssh
+          filter  = sshd
+          logpath = /var/log/auth.log
+          maxretry = 5
+          findtime = 600
+          bantime  = 3600
+
+    - name: Configure recidive jail
+      copy:
+        dest: /etc/fail2ban/jail.d/recidive.conf
+        content: |
+          [recidive]
+          enabled = true
+          logpath = /var/log/fail2ban.log
+          bantime = 1w        # 1 week ban
+          findtime = 1d       # 1 day observation window
+          maxretry = 5
+
+    - name: Restart fail2ban to apply config
+      service:
+        name: fail2ban
+        state: restarted
+
