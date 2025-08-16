@@ -1,0 +1,24 @@
+- hosts: all:!localhost
+  become: true
+  tasks:
+    - name: define dockerswarm_advertise_addr_string (defined) - PROVIDED
+      set_fact:
+        dockerswarm_advertise_addr_string: "{{ dockerswarm_advertise_addr }}"
+      when: dockerswarm_advertise_addr is defined
+    
+    - name: define dockerswarm_advertise_addr_string (defined) - DEFAULTED TO HOST IP
+      set_fact:
+        dockerswarm_advertise_addr_string: "{{ ansible_ssh_host }}"
+      when: dockerswarm_advertise_addr is not defined
+
+    - name: Get info on Docker Swarm
+      community.docker.docker_swarm_info:
+      ignore_errors: yes
+      register: swarm_node_facts
+
+    - name: Inform about basic flags
+      ansible.builtin.debug:
+        msg: |
+          Was able to talk to docker daemon: {{ swarm_node_facts.can_talk_to_docker }}
+          Docker in Swarm mode: {{ swarm_node_facts.docker_swarm_active }}
+          This is a Manager node: {{ swarm_node_facts.docker_swarm_manager }}
